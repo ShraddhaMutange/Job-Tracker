@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Job Tracker</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <!-- TOAST -->
+  <% if (typeof toast !== 'undefined' && toast) { %>
+    <div class="toast show" id="toast"><%= toast %></div>
+  <% } %>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">🎯</span>
+      <span class="nav-title">Job Tracker</span>
+    </div>
+    <div class="nav-right">
+      <% if (currentUser) { %>
+        <a href="/profile" class="nav-user-link">
+          <div class="user-avatar"><%= currentUser.username.charAt(0).toUpperCase() %></div>
+          <span class="user-name"><%= currentUser.username %></span>
+        </a>
+      <% } %>
+      <a href="/jobs/new" class="btn-add">+ New Application</a>
+      <a href="/logout" class="btn-logout">Logout</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <div class="dashboard-hero">
+    <div class="hero-text">
+      <h1>Good to see you, <%= currentUser ? currentUser.username : 'there' %>! 👋</h1>
+      <p>Here's your job application overview</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card total">
+      <div class="stat-icon">📋</div>
+      <h2><%= stats.total %></h2>
+      <p>Total</p>
+    </div>
+    <div class="stat-card applied">
+      <div class="stat-icon">📤</div>
+      <h2><%= stats.applied %></h2>
+      <p>Applied</p>
+    </div>
+    <div class="stat-card interview">
+      <div class="stat-icon">🎙️</div>
+      <h2><%= stats.interview %></h2>
+      <p>Interview</p>
+    </div>
+    <div class="stat-card offer">
+      <div class="stat-icon">🎉</div>
+      <h2><%= stats.offer %></h2>
+      <p>Offer</p>
+    </div>
+    <div class="stat-card rejected">
+      <div class="stat-icon">❌</div>
+      <h2><%= stats.rejected %></h2>
+      <p>Rejected</p>
+    </div>
+  </div>
+
+  <!-- CHART SECTION -->
+  <div class="chart-section">
+    <div class="chart-card">
+      <h3>Applications Overview</h3>
+      <p class="chart-subtitle">Your current application breakdown</p>
+      <div style="position:relative; width:180px; height:180px; margin: 0 auto;">
+        <canvas id="statusChart" role="img" aria-label="Doughnut chart showing job application status breakdown">
+          Applied: <%= stats.applied %>, Interview: <%= stats.interview %>, Offer: <%= stats.offer %>, Rejected: <%= stats.rejected %>
+        </canvas>
+      </div>
+      <div class="chart-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#3498db"></span>Applied (<%= stats.applied %>)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f39c12"></span>Interview (<%= stats.interview %>)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#2ecc71"></span>Offer (<%= stats.offer %>)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#e74c3c"></span>Rejected (<%= stats.rejected %>)</span>
+      </div>
+    </div>
+
+    <div class="chart-tip">
+      <h3>💡 Quick Tips</h3>
+      <ul>
+        <li>Follow up on applications older than <strong>2 weeks</strong></li>
+        <li>Aim for at least <strong>5 applications</strong> per week</li>
+        <li>Update status after every <strong>interview</strong></li>
+        <li>Keep your resume link <strong>up to date</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-section">
+    <p class="filter-label">Filter by status:</p>
+    <div class="filter-bar">
+      <a href="/jobs" class="<%= currentFilter === 'All' ? 'active' : '' %>">All</a>
+      <a href="/jobs?status=Applied" class="<%= currentFilter === 'Applied' ? 'active' : '' %>">Applied</a>
+      <a href="/jobs?status=Interview" class="<%= currentFilter === 'Interview' ? 'active' : '' %>">Interview</a>
+      <a href="/jobs?status=Offer" class="<%= currentFilter === 'Offer' ? 'active' : '' %>">Offer</a>
+      <a href="/jobs?status=Rejected" class="<%= currentFilter === 'Rejected' ? 'active' : '' %>">Rejected</a>
+    </div>
+  </div>
+
+  <!-- JOB CARDS -->
+  <div class="jobs-grid">
+    <% if (jobs.length === 0) { %>
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <h2>No applications yet</h2>
+        <p>Click "+ New Application" to get started!</p>
+        <a href="/jobs/new" class="btn-submit" style="display:inline-block; margin-top:16px; width:auto; padding: 10px 24px; text-decoration:none">Add Your First Job</a>
+      </div>
+    <% } else { %>
+      <% jobs.forEach(job => { %>
+        <div class="job-card <%= job.status %>">
+
+          <!-- CARD HEADER -->
+          <div class="card-header">
+            <div class="company-avatar"><%= job.company.charAt(0).toUpperCase() %></div>
+            <div class="card-header-text">
+              <h3><%= job.company %></h3>
+              <p class="role">💼 <%= job.role %></p>
+            </div>
+            <span class="badge <%= job.status %>"><%= job.status %></span>
+          </div>
+
+          <!-- DEADLINE BADGE -->
+          <%
+            let urgencyBadge = '';
+            if (job.deadline) {
+              const today = new Date();
+              const diff = Math.ceil((job.deadline - today) / (1000 * 60 * 60 * 24));
+              if (diff < 0) urgencyBadge = 'expired';
+              else if (diff <= 3) urgencyBadge = 'urgent';
+              else if (diff <= 7) urgencyBadge = 'soon';
+            }
+          %>
+          <% if (urgencyBadge === 'expired') { %>
+            <span class="deadline-badge expired">❌ Deadline Passed</span>
+          <% } else if (urgencyBadge === 'urgent') { %>
+            <span class="deadline-badge urgent">🔴 Deadline in ≤ 3 days!</span>
+          <% } else if (urgencyBadge === 'soon') { %>
+            <span class="deadline-badge soon">🟡 Deadline this week</span>
+          <% } else if (job.deadline) { %>
+            <span class="deadline-badge safe">🟢 Deadline: <%= job.deadline.toDateString() %></span>
+          <% } %>
+
+          <p class="date">📅 Applied: <%= job.appliedDate.toDateString() %></p>
+
+          <% if (job.notes) { %>
+            <p class="notes">"<%= job.notes %>"</p>
+          <% } %>
+
+          <!-- CARD ACTIONS -->
+          <div class="card-actions">
+            <a href="/jobs/<%= job._id %>/edit" class="btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>
+            <% if (job.resumeLink) { %>
+              <a href="<%= job.resumeLink %>" target="_blank" class="btn-resume"><i class="fa-solid fa-file"></i> Resume</a>
+            <% } %>
+            <form action="/jobs/<%= job._id %>?_method=DELETE" method="POST" style="margin-left:auto">
+              <button class="btn-delete" onclick="return confirm('Delete this application?')"><i class="fa-solid fa-trash"></i></button>
+            </form>
+          </div>
+
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    const ctx = document.getElementById('statusChart');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Applied', 'Interview', 'Offer', 'Rejected'],
+        datasets: [{
+          data: [<%= stats.applied %>, <%= stats.interview %>, <%= stats.offer %>, <%= stats.rejected %>],
+          backgroundColor: ['#3498db', '#f39c12', '#2ecc71', '#e74c3c'],
+          borderWidth: 3,
+          borderColor: '#ffffff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '68%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.label}: ${ctx.raw} application${ctx.raw !== 1 ? 's' : ''}`
+            }
+          }
+        }
+      }
+    });
+
+    const toast = document.getElementById('toast');
+    if (toast) setTimeout(() => toast.classList.remove('show'), 3000);
+  </script>
+
+  <script>
+    const toast = document.getElementById('toast');
+    if (toast) {
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Job Tracker</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+
+    <!-- LEFT PANEL -->
+    <div class="auth-left">
+      <div class="auth-brand">
+        <div class="auth-logo">🎯</div>
+        <h1>Job Tracker</h1>
+      </div>
+      <div class="auth-left-text">
+        <h2>Your career journey starts here.</h2>
+        <p>Join thousands of students who track their applications, stay organized, and land their dream jobs.</p>
+      </div>
+      <div class="auth-circles">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="auth-right">
+      <div class="auth-form-box">
+        <h2>Create Account 🚀</h2>
+        <p class="auth-subtitle">Start tracking your applications</p>
+
+        <% if (error) { %>
+          <div class="alert-error"><%= error %></div>
+        <% } %>
+
+        <form action="/register" method="POST">
+          <div class="form-group">
+            <label>👤Username</label>
+            <div class="input-wrapper">
+              <span class="input-icon"></span>
+              <input type="text" name="username" placeholder="Enter username" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>✉️Email Address</label>
+            <div class="input-wrapper">
+              <span class="input-icon"></span>
+              <input type="email" name="email" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>🔒Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon"></span>
+              <input type="password" name="password" placeholder="Min 6 characters" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>🔒Confirm Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon"></span>
+              <input type="password" name="confirmPassword" placeholder="Repeat password" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Create Account →</button>
+        </form>
+
+        <p class="auth-switch">
+          Already have an account? <a href="/login">Sign In</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Add Job</title>
+        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+    <body>
+        
+        <!-- <nav>
+            <h1>🎯 Job Tracker</h1>
+            <a href="/jobs">Dashboard</a>
+        </nav> -->
+        <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-logo">🎯</span>
+      <span class="nav-title">Job Tracker</span>
+    </div>
+    <div class="nav-right">
+      <% if (currentUser) { %>
+        <div class="nav-user">
+          <div class="user-avatar"><%= currentUser.username.charAt(0).toUpperCase() %></div>
+          <span class="user-name"><%= currentUser.username %></span>
+        </div>
+      <% } %>
+      <a href="/jobs/new" class="btn-add">+ New Application</a>
+      <a href="/logout" class="btn-logout">Logout</a>
+    </div>
+  </nav>
+
+        <div class="form-container">
+            <h2>➕ Add New Application</h2>
+            <form action="/jobs" method="POST">
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input
+                        type="text"
+                        name="company"
+                        placeholder="e.g. Google"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label>Job Role</label>
+                    <input
+                        type="text"
+                        name="role"
+                        placeholder="e.g. Software Engineer"
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="Applied">Applied</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Date Applied</label>
+                    <input type="date" name="appliedDate" />
+                </div>
+
+                <div class="form-group">
+                    <label
+                        >Application Deadline
+                        <span style="color: #aaa; font-weight: 400"
+                            >(optional)</span
+                        ></label
+                    >
+                    <input type="date" name="deadline" />
+                </div>
+
+                <div class="form-group">
+                    <label
+                        >Resume Link
+                        <span style="color: #aaa; font-weight: 400"
+                            >(Google Drive / any link)
+                        </span>
+                    </label>
+                    <input
+                        type="url"
+                        name="resumeLink"
+                        placeholder="https://drive.google.com/..."
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea
+                        name="notes"
+                        placeholder="Any notes about this application..."
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Save Application
+                </button>
+            </form>
+            <a href="/jobs" class="btn-back">← Back to Dashboard</a>
+        </div>
+    </body>
+</html>

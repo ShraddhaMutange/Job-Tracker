@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Profile | Job Tracker</title>
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="nav-logo">🎯</span>
+                <span class="nav-title">Job Tracker</span>
+            </div>
+            <div class="nav-right">
+                <div class="nav-user">
+                    <div class="user-avatar">
+                        <%= currentUser.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="user-name"><%= currentUser.username %></span>
+                </div>
+                <a href="/jobs" class="btn-add">Dashboard</a>
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+        </nav>
+
+        <div class="profile-container">
+            <!-- PROFILE CARD -->
+            <div class="profile-card">
+                <div class="profile-avatar-large">
+                    <%= currentUser.username.charAt(0).toUpperCase() %>
+                </div>
+                <h2><%= currentUser.username %></h2>
+                <p class="profile-email">✉️ <%= currentUser.email %></p>
+                <p class="profile-since">
+                    🗓️ Member since <%= currentUser.createdAt.toDateString() %>
+                </p>
+            </div>
+
+            <!-- STATS CARD -->
+            <div class="profile-stats-card">
+                <h3>Your Application Summary</h3>
+                <div class="profile-stats-grid">
+                    <div class="profile-stat">
+                        <h2><%= stats.total %></h2>
+                        <p>Total Applications</p>
+                    </div>
+                    <div class="profile-stat">
+                        <h2><%= stats.applied %></h2>
+                        <p>Applied</p>
+                    </div>
+                    <div class="profile-stat">
+                        <h2><%= stats.interview %></h2>
+                        <p>Interviews</p>
+                    </div>
+                    <div class="profile-stat">
+                        <h2><%= stats.offer %></h2>
+                        <p>Offers</p>
+                    </div>
+                    <div class="profile-stat">
+                        <h2><%= stats.rejected %></h2>
+                        <p>Rejected</p>
+                    </div>
+                    <div class="profile-stat">
+                        <h2>
+                            <%= stats.total > 0 ? Math.round((stats.offer /
+                            stats.total) * 100) : 0 %>%
+                        </h2>
+                        <p>Success Rate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
